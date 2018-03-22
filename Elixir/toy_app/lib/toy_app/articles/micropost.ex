@@ -15,5 +15,6 @@ defmodule ToyApp.Articles.Micropost do
     micropost
     |> cast(attrs, [:content, :user_id])
     |> validate_required([:content, :user_id])
+    |> validate_length(:content, max: 140)
   end
 end
