@@ -1,0 +1,5 @@
+<h2>New Micropost</h2>
+
+<%= render "form.html", Map.put(assigns, :action, micropost_path(@conn, :create)) %>
+
+<span><%= link "Back", to: micropost_path(@conn, :index) %></span>
