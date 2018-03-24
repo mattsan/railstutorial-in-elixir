@@ -17,3 +17,6 @@ config :sample_app, SampleApp.Repo,
   database: "sample_app_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+config :phoenix_integration,
+  endpoint: SampleAppWeb.Endpoint

@@ -17,4 +17,10 @@ defmodule SampleAppWeb.StaticPageController do
     |> assign(:title, "About")
     |> render(:about)
   end
+
+  def contact(conn, _) do
+    conn
+    |> assign(:title, "Contact")
+    |> render(:contact)
+  end
 end

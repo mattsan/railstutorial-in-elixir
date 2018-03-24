@@ -36,4 +36,12 @@ defmodule SampleAppWeb.StaticPageControllerTest do
     assert response =~ "About"
     assert response =~ "<title>Hello SampleApp! | About</title>"
   end
+
+  test "should get contact", %{conn: conn} do
+    response =
+      conn
+      |> get(static_page_path(conn, :contact))
+      |> html_response(200)
+    assert response =~ "<title>Hello SampleApp! | Contact</title>"
+  end
 end

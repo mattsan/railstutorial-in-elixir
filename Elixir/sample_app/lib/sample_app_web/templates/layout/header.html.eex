@@ -1,0 +1,12 @@
+<header class="navbar navbar-fixed-top navbar-inverse">
+  <div class="container-fluid">
+    <%= link("sample app", to: root_path(@conn, :home), id: "logo") %>
+    <nav>
+      <ul class="nav navbar-nav navbar-right">
+        <li><%= link("Home", to: root_path(@conn, :home)) %></li>
+        <li><%= link("Help", to: static_page_path(@conn, :help)) %></li>
+        <li><%= link("Log in", to: "#") %></li>
+      </ul>
+    </nav>
+  </div>
+</header>

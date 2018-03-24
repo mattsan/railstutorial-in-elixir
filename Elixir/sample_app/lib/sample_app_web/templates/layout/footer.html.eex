@@ -1,0 +1,12 @@
+<footer class="footer">
+  <small>
+    The Ruby on Rails Tutorial by Michael Hartl
+  </small>
+  <nav>
+    <ul>
+      <li><%= link("About", to: static_page_path(@conn, :about)) %></li>
+      <li><%= link("Contact", to: static_page_path(@conn, :contact)) %></li>
+      <li><%= link("News", to: "http://phoenixframework.org") %></li>
+    </ul>
+  </nav>
+</footer>
