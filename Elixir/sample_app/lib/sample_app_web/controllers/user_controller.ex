@@ -3,7 +3,6 @@ defmodule SampleAppWeb.UserController do
 
   def new(conn, _) do
     conn
-    |> assign(:title, "Sign up")
     |> render(:new)
   end
 end

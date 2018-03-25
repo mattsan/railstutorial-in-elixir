@@ -4,9 +4,13 @@ defmodule SampleAppWeb.LayoutView do
   @title_base "Hello SampleApp!"
 
   def page_title(conn) do
-    case conn.assigns[:title] do
-      nil -> @title_base
-      title -> "#{@title_base} | #{title}"
+    title = with true <- function_exported?(view_module(conn), :page_title, 2),
+                 do: apply(view_module(conn), :page_title, [conn, action_name(conn)])
+
+    if title do
+      "#{@title_base} | #{title}"
+    else
+      @title_base
     end
   end
 end
