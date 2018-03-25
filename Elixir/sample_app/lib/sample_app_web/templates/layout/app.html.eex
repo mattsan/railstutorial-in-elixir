@@ -23,6 +23,19 @@
       <%= render "footer.html", conn: @conn %>
 
     </div> <!-- /container -->
+
+    <%= if Mix.env == :dev do %>
+      <div class="container-fluid">
+        <div class="panel panel-info">
+          <div class="panel-body">
+            <tt>
+              <%= inspect(@conn, limit: :infinity) %>
+            </tt>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>

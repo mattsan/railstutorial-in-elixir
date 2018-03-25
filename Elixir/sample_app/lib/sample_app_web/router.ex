@@ -22,6 +22,7 @@ defmodule SampleAppWeb.Router do
     get "/static_pages/about", StaticPageController, :about
     get "/static_pages/contact", StaticPageController, :contact
     get "/signup", UserController, :new
+    resources "/users", UserController
   end
 
   # Other scopes may use custom stacks.
