@@ -9,13 +9,7 @@ defmodule SampleAppWeb.UserView do
     %URI{@gravatar_uri | path: gravatar_id, query: "s=#{size}"} |> to_string()
   end
 
-  def page_title(conn, action) do
-    case action do
-      :new ->
-        "Sign up"
-      :show ->
-        conn.assigns[:user].name
-      _ -> nil
-    end
-  end
+  def page_title(_, :new), do: "Sign up"
+  def page_title(conn, :show), do: conn.assigns[:user].name
+  def page_title(_, _), do: nil
 end

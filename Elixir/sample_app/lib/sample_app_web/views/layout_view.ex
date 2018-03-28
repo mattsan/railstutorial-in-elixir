@@ -13,4 +13,12 @@ defmodule SampleAppWeb.LayoutView do
       @title_base
     end
   end
+
+  def current_user(conn) do
+    conn.assigns[:current_user]
+  end
+
+  def logged_in?(conn) do
+    current_user(conn) |> is_nil() |> Kernel.not()
+  end
 end

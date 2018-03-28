@@ -32,5 +32,6 @@ defmodule SampleAppWeb.UserSignupTest do
     |> assert_response(
         redirect: user_path(conn, :show, SampleApp.Accounts.get_user_by(email: "user@example.com"))
       )
+
   end
 end

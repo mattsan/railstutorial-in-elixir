@@ -6,8 +6,7 @@ defmodule SampleAppWeb.UserController do
 
   def new(conn, _) do
     changeset = User.changeset(%User{}, %{})
-    conn
-    |> render(:new, changeset: changeset)
+    render(conn, :new, changeset: changeset)
   end
 
   def show(conn, %{"id" => id}) do
@@ -20,6 +19,7 @@ defmodule SampleAppWeb.UserController do
     case Accounts.create_user(user_params) do
       {:ok, user} ->
         conn
+        |> put_session(:user_id, user.id)
         |> put_flash(:success, "Welcome to the Sample App")
         |> redirect(to: user_path(conn, :show, user))
       {:error, %Ecto.Changeset{} = changeset} ->
