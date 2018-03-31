@@ -3,14 +3,14 @@ defmodule SampleAppWeb.SessionController do
 
   alias SampleApp.Accounts
   alias SampleApp.Accounts.User
+  alias SampleAppWeb.Auth
 
   def new(conn, _) do
-    changeset = User.changeset(%User{}, %{})
     conn
-    |> render(:new, changeset: changeset)
+    |> render(:new)
   end
 
-  def create(conn, %{"user" => %{"email" => email, "password" => password}}) do
+  def create(conn, %{"session" => %{"email" => email, "password" => password, "remember_me" => remember_me}}) do
     user =
       with %User{} = user <- Accounts.get_user_by(email: String.downcase(email)),
            true <- Bcrypt.verify_pass(password, user.password_digest),
@@ -19,7 +19,8 @@ defmodule SampleAppWeb.SessionController do
     case user do
       %User{} ->
         conn
-        |> put_session(:user_id, user.id)
+        |> Auth.login(user)
+        |> Auth.remember_if(user, String.to_atom(remember_me))
         |> redirect(to: user_path(conn, :show, user))
       _ ->
         conn
@@ -29,8 +30,18 @@ defmodule SampleAppWeb.SessionController do
   end
 
   def delete(conn, _) do
+    conn =
+      case conn.assigns[:current_user] do
+        nil ->
+          conn
+
+        user ->
+          conn
+          |> Auth.forget(user)
+      end
+
     conn
-    |> delete_session(:user_id)
+    |> Auth.logout()
     |> redirect(to: session_path(conn, :new))
   end
 end

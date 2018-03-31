@@ -105,4 +105,23 @@ defmodule SampleApp.Accounts do
   def get_user_by(params) when is_list(params) do
     Repo.get_by(User, params)
   end
+
+  defp new_token do
+    16 |> :crypto.strong_rand_bytes() |> Base.url_encode64()
+  end
+
+  def remember_user(%User{} = user) do
+    remember_token = new_token()
+    remember_digest = Bcrypt.hash_pwd_salt(remember_token)
+    Repo.update(Ecto.Changeset.change(user, %{remember_digest: remember_digest}))
+    remember_token
+  end
+
+  def forget_user(%User{} = user) do
+    user && Repo.update(Ecto.Changeset.change(user, %{remember_digest: nil}))
+  end
+
+  def authenticated?(%User{} = user, remember_token) do
+    user.remember_digest != nil && Bcrypt.verify_pass(remember_token, user.remember_digest)
+  end
 end

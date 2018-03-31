@@ -41,12 +41,21 @@ defmodule SampleAppWeb.Router do
   # end
 
   def assign_current_user(conn, _) do
-    case get_session(conn, :user_id) do
-      nil ->
-        conn
-      user_id ->
+    cond do
+      (user_id = get_session(conn, :user_id)) != nil ->
         conn
         |> assign(:current_user, SampleApp.Accounts.get_user!(user_id))
+      (user_id = conn.cookies["user_id"]) != nil ->
+        user = SampleApp.Accounts.get_user_by(id: user_id)
+        if user && SampleApp.Accounts.authenticated?(user, conn.cookies["remember_token"]) do
+          conn
+          |> put_session(:user_id, user.id)
+          |> assign(:current_user, user)
+        else
+          conn
+        end
+      true ->
+        conn
     end
   end
 

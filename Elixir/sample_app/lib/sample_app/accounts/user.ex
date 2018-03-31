@@ -2,7 +2,6 @@ defmodule SampleApp.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
   import Bcrypt
-  import Bcrypt.Base
 
   @valid_email_regex ~r/\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 
@@ -12,6 +11,8 @@ defmodule SampleApp.Accounts.User do
     field :password_digest, :string
     field :password, :string, virtual: true
     field :password_confirmation, :string, virtual: true
+    field :remember_digest, :string
+    field :remember_token, :string, virtual: true
 
     timestamps()
   end
@@ -45,7 +46,7 @@ defmodule SampleApp.Accounts.User do
       nil ->
         changeset
       password ->
-        password_digest = hash_password(password, gen_salt())
+        password_digest = hash_pwd_salt(password)
         put_change(changeset, :password_digest, password_digest)
     end
   end

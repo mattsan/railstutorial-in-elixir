@@ -3,6 +3,7 @@ defmodule SampleAppWeb.UserController do
 
   alias SampleApp.Accounts
   alias SampleApp.Accounts.User
+  alias SampleAppWeb.Auth
 
   def new(conn, _) do
     changeset = User.changeset(%User{}, %{})
@@ -19,7 +20,7 @@ defmodule SampleAppWeb.UserController do
     case Accounts.create_user(user_params) do
       {:ok, user} ->
         conn
-        |> put_session(:user_id, user.id)
+        |> Auth.login(user)
         |> put_flash(:success, "Welcome to the Sample App")
         |> redirect(to: user_path(conn, :show, user))
       {:error, %Ecto.Changeset{} = changeset} ->
