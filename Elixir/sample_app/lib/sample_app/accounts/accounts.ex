@@ -18,7 +18,15 @@ defmodule SampleApp.Accounts do
 
   """
   def list_users do
-    Repo.all(User)
+    User
+    |> order_by(:id)
+    |> Repo.all()
+  end
+
+  def list_users_paginated(params) do
+    User
+    |> order_by(:id)
+    |> Repo.paginate(params)
   end
 
   @doc """
@@ -104,6 +112,12 @@ defmodule SampleApp.Accounts do
 
   def get_user_by(params) when is_list(params) do
     Repo.get_by(User, params)
+  end
+
+  def count_users do
+    User
+    |> select([u], count(u.id))
+    |> Repo.one()
   end
 
   defp new_token do

@@ -1,6 +1,8 @@
 defmodule SampleAppWeb.Router do
   use SampleAppWeb, :router
 
+  import SampleAppWeb.Auth
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -32,41 +34,23 @@ defmodule SampleAppWeb.Router do
   scope "/", SampleAppWeb do
     pipe_through [:browser, :permit_logged_in_user]
 
-    resources "/users", UserController, except: [:new, :create]
+    resources "/users", UserController, only: [:index, :show]
+  end
+
+  scope "/", SampleAppWeb do
+    pipe_through [:browser, :permit_logged_in_user, :correct_user]
+
+    resources "/users", UserController, only: [:edit, :update]
+  end
+
+  scope "/", SampleAppWeb do
+    pipe_through [:browser, :permit_logged_in_user, :correct_user, :admin_user]
+
+    resources "/users", UserController, only: [:delete]
   end
 
   # Other scopes may use custom stacks.
   # scope "/api", SampleAppWeb do
   #   pipe_through :api
   # end
-
-  def assign_current_user(conn, _) do
-    cond do
-      (user_id = get_session(conn, :user_id)) != nil ->
-        conn
-        |> assign(:current_user, SampleApp.Accounts.get_user!(user_id))
-      (user_id = conn.cookies["user_id"]) != nil ->
-        user = SampleApp.Accounts.get_user_by(id: user_id)
-        if user && SampleApp.Accounts.authenticated?(user, conn.cookies["remember_token"]) do
-          conn
-          |> put_session(:user_id, user.id)
-          |> assign(:current_user, user)
-        else
-          conn
-        end
-      true ->
-        conn
-    end
-  end
-
-  def permit_logged_in_user(conn, _) do
-    case conn.assigns[:current_user] do
-      nil ->
-        conn
-        |> redirect(to: SampleAppWeb.Router.Helpers.session_path(conn, :new))
-        |> halt()
-      _ ->
-        conn
-    end
-  end
 end

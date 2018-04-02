@@ -13,7 +13,4 @@ defmodule SampleAppWeb.LayoutView do
       @title_base
     end
   end
-
-  defdelegate current_user(conn), to: SampleAppWeb.Auth
-  defdelegate logged_in?(conn), to: SampleAppWeb.Auth
 end

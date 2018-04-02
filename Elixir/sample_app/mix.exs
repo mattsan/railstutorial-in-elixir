@@ -42,7 +42,10 @@ defmodule SampleApp.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:phoenix_integration, "~> 0.1", only: :test},
-      {:bcrypt_elixir, "~> 1.0"}
+      {:bcrypt_elixir, "~> 1.0"},
+      {:scrivener_ecto, "~> 1.3"},
+      {:scrivener_html, "~> 1.7"},
+      {:faker, "~> 0.10"}
     ]
   end
 

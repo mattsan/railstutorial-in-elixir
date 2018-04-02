@@ -13,6 +13,7 @@ defmodule SampleApp.Accounts.User do
     field :password_confirmation, :string, virtual: true
     field :remember_digest, :string
     field :remember_token, :string, virtual: true
+    field :admin, :boolean
 
     timestamps()
   end

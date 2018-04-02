@@ -6,7 +6,7 @@
         <li><%= link("Home", to: root_path(@conn, :home)) %></li>
         <li><%= link("Help", to: static_page_path(@conn, :help)) %></li>
         <%= if logged_in?(@conn) do %>
-          <li><%= link("Users", to: "#") %></li>
+          <li><%= link("Users", to: user_path(@conn, :index)) %></li>
           <li class="dropdown">
 
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -14,7 +14,7 @@
             </a>
             <ul class="dropdown-menu">
               <li><%= link("Profile", to: user_path(@conn, :show, current_user(@conn))) %></li>
-              <li><%= link("Settings", to: "#") %></li>
+              <li><%= link("Settings", to: user_path(@conn, :edit, current_user(@conn))) %></li>
               <li class="divider"></li>
               <li><%= link("Log out", to: session_path(@conn, :delete), method: :delete) %></li>
             </ul>

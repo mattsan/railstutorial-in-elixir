@@ -21,7 +21,7 @@ defmodule SampleAppWeb.SessionController do
         conn
         |> Auth.login(user)
         |> Auth.remember_if(user, String.to_atom(remember_me))
-        |> redirect(to: user_path(conn, :show, user))
+        |> Auth.redirect_back_or(user_path(conn, :show, user))
       _ ->
         conn
         |> put_flash(:error, "Invalid email/password combination")

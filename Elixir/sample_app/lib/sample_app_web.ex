@@ -40,6 +40,10 @@ defmodule SampleAppWeb do
       import SampleAppWeb.Router.Helpers
       import SampleAppWeb.ErrorHelpers
       import SampleAppWeb.Gettext
+
+      defdelegate current_user(conn), to: SampleAppWeb.Auth
+      defdelegate current_user?(conn), to: SampleAppWeb.Auth
+      defdelegate logged_in?(conn), to: SampleAppWeb.Auth
     end
   end
 

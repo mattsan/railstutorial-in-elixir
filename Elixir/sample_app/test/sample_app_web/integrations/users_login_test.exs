@@ -4,21 +4,14 @@ defmodule SampleAppWeb.UserLoginTest do
   alias SampleApp.Accounts
   alias SampleAppWeb.Auth
 
-  @valid_user_params  %{
-    name: "foo",
-    email: "foo@example.com",
-    password: "foobar",
-    password_confirmation: "foobar"
-  }
-
   def tap(conn, fun) do
     fun.(conn)
     conn
   end
 
   setup do
-    Accounts.create_user(@valid_user_params)
-    :ok
+    {:ok, user} = Accounts.create_user(user_params("foo"))
+    [user: user]
   end
 
   test "login with invalid informatin", %{conn: conn} do
@@ -37,14 +30,14 @@ defmodule SampleAppWeb.UserLoginTest do
     refute Auth.logged_in?(conn)
   end
 
-  test "login with valid information followed by logout", %{conn: conn} do
-    user = Accounts.get_user_by(email: @valid_user_params.email)
+  test "login with valid information followed by logout", %{conn: conn, user: user} do
+    user = Accounts.get_user_by(email: user.email)
 
     refute Auth.logged_in?(conn)
 
     conn
     |> get(session_path(conn, :new))
-    |> submit_form(%{session: %{email: @valid_user_params.email, password: @valid_user_params.password}})
+    |> submit_form(%{session: %{email: user.email, password: "password"}})
     |> assert_response(
         redirect: user_path(conn, :show, user)
       )
@@ -87,13 +80,13 @@ defmodule SampleAppWeb.UserLoginTest do
   end
 
   describe "remembering" do
-    setup %{conn: conn, remember_me: remember_me} do
-      user = Accounts.get_user_by(email: @valid_user_params.email)
+    setup %{conn: conn, user: user, remember_me: remember_me} do
+      user = Accounts.get_user_by(email: user.email)
       [
         conn:
         conn
         |> get(session_path(conn, :new))
-        |> submit_form(%{session: %{email: @valid_user_params.email, password: @valid_user_params.password, remember_me: remember_me}})
+        |> submit_form(%{session: %{email: user.email, password: "password", remember_me: remember_me}})
         |> get(user_path(conn, :show, user))
       ]
     end

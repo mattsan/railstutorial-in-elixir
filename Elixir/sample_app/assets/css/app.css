@@ -140,3 +140,14 @@ aside section h1 {
   width: auto;
   margin-left: 0;
 }
+
+.users {
+  list-style: none;
+  margin: 0;
+}
+
+.users li {
+  overflow: auto;
+  padding: 10px 0;
+  border-bottom: 1px solid #ccc;
+}
