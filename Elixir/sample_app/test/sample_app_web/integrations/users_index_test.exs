@@ -2,36 +2,16 @@ defmodule SampleWebApp.UserIndexTest do
   use SampleAppWeb.ConnCase
   use Hound.Helpers
 
+  import SampleAppWeb.TestHelper
+
   hound_session()
 
-  alias SampleApp.{Accounts, Repo}
-  alias SampleApp.Accounts.User
-
   setup do
-    {:ok, user} =
-      Accounts.create_user(%{
-        name: "foo",
-        email: "foo@example.com",
-        password: "password",
-        password_confirmation: "password"
-      })
+    user = create_user("foo")
 
-    timestamp = NaiveDateTime.utc_now()
-    password_digest = Bcrypt.hash_pwd_salt("password")
-
-    entries =
-      1..35
-      |> Enum.map(fn n ->
-        %{
-          name: "user-#{n}",
-          email: "user-#{n}@example.com",
-          password_digest: password_digest,
-          inserted_at: timestamp,
-          updated_at: timestamp
-        }
-      end)
-
-    Repo.insert_all(User, entries)
+    1..35
+    |> Enum.map(&"user-#{&1}")
+    |> create_users()
 
     [user: user]
   end

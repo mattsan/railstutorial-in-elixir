@@ -2,20 +2,12 @@ defmodule SampleAppWeb.UserEditTest do
   use SampleAppWeb.ConnCase
   use Hound.Helpers
 
+  import SampleAppWeb.TestHelper
+
   hound_session()
 
-  def user_params(user_name) do
-    %{
-      name: "#{user_name}",
-      email: "#{user_name}@example.com",
-      password: "password",
-      password_confirmation: "password"
-    }
-  end
-
   setup do
-    {:ok, user} = SampleApp.Accounts.create_user(user_params("foo"))
-    [user: user]
+    [user: create_user("foo")]
   end
 
   test "successful edit with frendly forwarding", %{conn: conn, user: user} do

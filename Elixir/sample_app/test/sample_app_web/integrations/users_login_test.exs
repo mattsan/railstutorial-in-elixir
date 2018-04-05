@@ -2,22 +2,14 @@ defmodule SampleAppWeb.UserLoginTest do
   use SampleAppWeb.ConnCase
   use Hound.Helpers
 
-  hound_session()
-
   alias SampleApp.Accounts
 
-  def user_params(user_name) do
-    %{
-      name: "#{user_name}",
-      email: "#{user_name}@example.com",
-      password: "password",
-      password_confirmation: "password"
-    }
-  end
+  import SampleAppWeb.TestHelper
+
+  hound_session()
 
   setup do
-    {:ok, user} = Accounts.create_user(user_params("foo"))
-    [user: user]
+    [user: create_user("foo")]
   end
 
   test "login with invalid informatin" do
