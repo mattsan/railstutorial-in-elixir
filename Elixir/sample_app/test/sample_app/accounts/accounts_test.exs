@@ -1,7 +1,7 @@
 defmodule SampleApp.AccountsTest do
   use SampleApp.DataCase
 
-  alias SampleApp.Accounts
+  alias SampleApp.{Accounts, Repo}
   alias SampleApp.Accounts.User
 
   describe "users" do
@@ -116,8 +116,12 @@ defmodule SampleApp.AccountsTest do
     end)
 
     test "email addresses should be unique", %{changeset: changeset} do
-      SampleApp.Repo.insert(changeset)
-      duplicate_changeset = User.changeset(%User{}, %{changeset.changes | name: "bar", email: String.upcase(changeset.changes.email)})
+      changeset
+      |> Repo.insert()
+
+      {:error, duplicate_changeset} =
+        User.changeset(%User{}, %{changeset.changes | name: "bar", email: String.upcase(changeset.changes.email)})
+        |> Repo.insert()
       refute duplicate_changeset.valid?
     end
 

@@ -4,7 +4,7 @@ use Mix.Config
 # you can enable the server option below.
 config :sample_app, SampleAppWeb.Endpoint,
   http: [port: 4001],
-  server: false
+  server: true
 
 # Print only warnings and errors during test
 config :logger, level: :warn
@@ -18,5 +18,4 @@ config :sample_app, SampleApp.Repo,
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
 
-config :phoenix_integration,
-  endpoint: SampleAppWeb.Endpoint
+config :hound, driver: "phantomjs"

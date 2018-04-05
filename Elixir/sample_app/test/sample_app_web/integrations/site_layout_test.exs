@@ -1,21 +1,22 @@
 defmodule SampleAppWeb.SiteLayoutTest do
-  use SampleAppWeb.IntegrationCase, async: true
+  use SampleAppWeb.ConnCase
+  use Hound.Helpers
+
+  hound_session()
 
   test "layout links", %{conn: conn} do
-    conn
-    |> get(root_path(conn, :home))
-    |> assert_response(
-        status: 200,
-        html: ~s[<a href="#{root_path(conn, :home)}" id="logo">sample app</a>],
-        html: ~s[<a href="#{root_path(conn, :home)}">Home</a>],
-        html: ~s[<a href="#{static_page_path(conn, :help)}">Help</a>],
-        html: ~s[<a href="#{static_page_path(conn, :about)}">About</a>],
-        html: ~s[<a href="#{static_page_path(conn, :contact)}">Contact</a>]
-      )
-    |> follow_link("Contact")
-    |> assert_response(
-        status: 200,
-        html: ~s[<title>Hello SampleApp! | Contact</title>]
-      )
+    navigate_to(root_path(conn, :home))
+
+    assert page_title() == "Hello SampleApp!"
+
+    assert find_element(:link_text, "SAMPLE APP") |> attribute_value("href") == root_url(@endpoint, :home)
+    assert find_element(:link_text, "Home") |> attribute_value("href") == root_url(@endpoint, :home)
+    assert find_element(:link_text, "Help") |> attribute_value("href") == static_page_url(@endpoint, :help)
+    assert find_element(:link_text, "About") |> attribute_value("href") == static_page_url(@endpoint, :about)
+    assert find_element(:link_text, "Contact") |> attribute_value("href") == static_page_url(@endpoint, :contact)
+
+    find_element(:link_text, "Contact") |> click()
+
+    assert page_title() == "Hello SampleApp! | Contact"
   end
 end

@@ -41,7 +41,7 @@ defmodule SampleApp.Mixfile do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
-      {:phoenix_integration, "~> 0.1", only: :test},
+      {:hound, "~> 1.0", only: :test},
       {:bcrypt_elixir, "~> 1.0"},
       {:scrivener_ecto, "~> 1.3"},
       {:scrivener_html, "~> 1.7"},

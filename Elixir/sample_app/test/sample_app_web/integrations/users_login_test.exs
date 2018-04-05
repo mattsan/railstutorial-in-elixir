@@ -1,12 +1,18 @@
 defmodule SampleAppWeb.UserLoginTest do
-  use SampleAppWeb.IntegrationCase, async: true
+  use SampleAppWeb.ConnCase
+  use Hound.Helpers
+
+  hound_session()
 
   alias SampleApp.Accounts
-  alias SampleAppWeb.Auth
 
-  def tap(conn, fun) do
-    fun.(conn)
-    conn
+  def user_params(user_name) do
+    %{
+      name: "#{user_name}",
+      email: "#{user_name}@example.com",
+      password: "password",
+      password_confirmation: "password"
+    }
   end
 
   setup do
@@ -14,91 +20,69 @@ defmodule SampleAppWeb.UserLoginTest do
     [user: user]
   end
 
-  test "login with invalid informatin", %{conn: conn} do
-    refute Auth.logged_in?(conn)
+  test "login with invalid informatin" do
+    navigate_to(session_path(@endpoint, :new))
 
-    conn
-    |> get(session_path(conn, :new))
-    |> assert_response(
-        status: 200
-      )
-    |> submit_form(%{session: %{email: "", password: ""}})
-    |> assert_response(
-        redirect: session_path(conn, :new)
-      )
+    assert current_path() == session_path(@endpoint, :new)
 
-    refute Auth.logged_in?(conn)
+    fill_field({:id, "session_email"}, "")
+    fill_field({:id, "session_password"}, "")
+    find_element(:tag, "button") |> submit_element()
+
+    assert current_path() == session_path(@endpoint, :new)
   end
 
-  test "login with valid information followed by logout", %{conn: conn, user: user} do
+  test "login with valid information followed by logout", %{user: user} do
     user = Accounts.get_user_by(email: user.email)
 
-    refute Auth.logged_in?(conn)
+    navigate_to(session_path(@endpoint, :new))
 
-    conn
-    |> get(session_path(conn, :new))
-    |> submit_form(%{session: %{email: user.email, password: "password"}})
-    |> assert_response(
-        redirect: user_path(conn, :show, user)
-      )
-    |> get(user_path(conn, :show, user))
-    |> tap(
-        &(assert Auth.logged_in?(&1))
-      )
-    |> assert_response(
-        status: 200,
-        html: ~s[>Users</a>],
-        html: ~s[Account <b class="caret"></b>],
-        html: ~s[>Profile</a>],
-        html: ~s[>Settings</a>],
-        html: ~s[>Log out</a>]
-      )
-    |> refute_response(
-        html: ~s[>Log in</a>]
-      )
-    |> delete(session_path(conn, :delete))
-    |> assert_response(
-        redirect: session_path(conn, :new)
-      )
-    |> get(session_path(conn, :new))
-    |> tap(
-        &(refute Auth.logged_in?(&1))
-      )
-    |> assert_response(
-        status: 200,
-        html: ~s[>Log in</a>]
-      )
-    |> delete(session_path(conn, :delete))
-    |> get(session_path(conn, :new))
-    |> refute_response(
-        html: ~s[>Users</a>],
-        html: ~s[Account <b class="caret"></b>],
-        html: ~s[>Profile</a>],
-        html: ~s[>Settings</a>],
-        html: ~s[>Log out</a>]
-      )
+    assert current_path() == session_path(@endpoint, :new)
+
+    fill_field({:id, "session_email"}, user.email)
+    fill_field({:id, "session_password"}, "password")
+    find_element(:tag, "button") |> submit_element()
+
+    assert current_path() == user_path(@endpoint, :show, user)
+
+    assert find_element(:link_text, "Users") |> attribute_value("href") == user_url(@endpoint, :index)
+    assert find_element(:partial_link_text, "Account") |> click()
+    assert find_element(:link_text, "Profile") |> attribute_value("href") == user_url(@endpoint, :show, user)
+    assert find_element(:link_text, "Settings") |> attribute_value("href") == user_url(@endpoint, :edit, user)
+    assert find_element(:link_text, "Log out") |> attribute_value("data-to") == session_path(@endpoint, :delete)
+    refute visible_in_page?(~r/Log in/)
+
+    find_element(:link_text, "Log out") |> click()
+
+    assert current_path() == session_path(@endpoint, :new)
+
+    assert find_element(:link_text, "Log in") |> attribute_value("href") == session_url(@endpoint, :new)
+    refute visible_in_page?(~r/Users/)
+    refute visible_in_page?(~r/Account/)
+    refute visible_in_page?(~r/Profile/)
+    refute visible_in_page?(~r/Setting/)
+    refute visible_in_page?(~r/Log out/)
   end
 
   describe "remembering" do
-    setup %{conn: conn, user: user, remember_me: remember_me} do
-      user = Accounts.get_user_by(email: user.email)
-      [
-        conn:
-        conn
-        |> get(session_path(conn, :new))
-        |> submit_form(%{session: %{email: user.email, password: "password", remember_me: remember_me}})
-        |> get(user_path(conn, :show, user))
-      ]
+    setup %{user: user, remember_me: remember_me} do
+      navigate_to(session_path(@endpoint, :new))
+      fill_field({:id, "session_email"}, user.email)
+      fill_field({:id, "session_password"}, "password")
+      if remember_me do
+        find_element(:id, "session_remember_me") |> click()
+      end
+      find_element(:tag, "button") |> submit_element()
     end
 
-    @tag remember_me: "false"
-    test "login with remembering", %{conn: conn} do
-      refute conn.cookies["remember_token"]
+    @tag remember_me: false
+    test "login with remembering" do
+      refute cookies() |> Enum.find(&(&1["name"] == "remember_token"))
     end
 
-    @tag remember_me: "true"
-    test "login without remembering", %{conn: conn} do
-      assert conn.cookies["remember_token"]
+    @tag remember_me: true
+    test "login without remembering" do
+      assert cookies() |> Enum.find(&(&1["name"] == "remember_token")) |> Map.get("value")
     end
   end
 end

@@ -29,7 +29,7 @@ defmodule SampleApp.Accounts.User do
     |> validate_format(:email, @valid_email_regex)
     |> validate_confirmation(:password)
     |> downcase(:email)
-    |> unsafe_validate_unique([:email], SampleApp.Repo)
+    |> unique_constraint(:email, name: :users_email_index)
     |> digest_password()
   end
 
