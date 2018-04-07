@@ -4,6 +4,8 @@ defmodule SampleApp.AccountsTest do
   alias SampleApp.{Accounts, Repo}
   alias SampleApp.Accounts.User
 
+  import SampleAppWeb.TestHelper
+
   describe "users" do
     @valid_attrs %{email: "some.email@example.com", name: "some name", password: "some password", password_confirmation: "some password"}
     @update_attrs %{email: "some.updated.email@example.com", name: "some updated name", password: "some updated password", password_confirmation: "some updated password"}
@@ -122,6 +124,7 @@ defmodule SampleApp.AccountsTest do
       {:error, duplicate_changeset} =
         User.changeset(%User{}, %{changeset.changes | name: "bar", email: String.upcase(changeset.changes.email)})
         |> Repo.insert()
+
       refute duplicate_changeset.valid?
     end
 
@@ -138,6 +141,16 @@ defmodule SampleApp.AccountsTest do
     @tag password: String.duplicate("a", 5)
     test "password should have a minimum length", %{changeset: changeset} do
       refute changeset.valid?
+    end
+  end
+
+  describe "authenticated?" do
+    setup do
+      [user: create_user(:example)]
+    end
+
+    test "authenticated? should return false for a user with nil digest", %{user: user} do
+      refute Accounts.authenticated?(user, "")
     end
   end
 end

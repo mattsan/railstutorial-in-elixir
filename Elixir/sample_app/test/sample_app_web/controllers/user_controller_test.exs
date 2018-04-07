@@ -8,14 +8,16 @@ defmodule SampleAppWeb.UseControllerTest do
   setup do
     user = create_user("foo")
     other_user = create_user("bar")
+
     [user: user, other_user: other_user]
   end
 
   test "should get new", %{conn: conn} do
     response =
       conn
-      |> get(user_path(conn, :new))
+      |> get(signup_path(@endpoint, :new))
       |> html_response(200)
+
     assert response =~ "Hello SampleApp!"
   end
 
@@ -23,37 +25,37 @@ defmodule SampleAppWeb.UseControllerTest do
     test "should redirect edit when not logged in", %{conn: conn, user: user} do
       path =
         conn
-        |> get(user_path(conn, :edit, user))
+        |> get(user_path(@endpoint, :edit, user))
         |> redirected_to()
 
-      assert path == session_path(conn, :new)
+      assert path == session_path(@endpoint, :new)
     end
 
     test "should redirect update when not logged in", %{conn: conn, user: user} do
       path =
         conn
-        |> patch(user_path(conn, :update, user))
+        |> patch(user_path(@endpoint, :update, user))
         |> redirected_to()
 
-      assert path == session_path(conn, :new)
+      assert path == session_path(@endpoint, :new)
     end
 
     test "should redirect index when not logged in", %{conn: conn} do
       path =
         conn
-        |> get(user_path(conn, :index))
+        |> get(user_path(@endpoint, :index))
         |> redirected_to()
 
-      assert path == session_path(conn, :new)
+      assert path == session_path(@endpoint, :new)
     end
 
     test "should redirect destroy when not logged in", %{conn: conn, user: user} do
       path =
         conn
-        |> delete(user_path(conn, :delete, user))
+        |> delete(user_path(@endpoint, :delete, user))
         |> redirected_to()
 
-      assert path == session_path(conn, :new)
+      assert path == session_path(@endpoint, :new)
     end
   end
 
@@ -65,19 +67,19 @@ defmodule SampleAppWeb.UseControllerTest do
     test "should redirect edit when logged in as wrong user", %{conn: conn, user: user} do
       path =
         conn
-        |> get(user_path(conn, :edit, user))
+        |> get(user_path(@endpoint, :edit, user))
         |> redirected_to()
 
-      assert path == root_path(conn, :home)
+      assert path == root_path(@endpoint, :home)
     end
 
     test "should redirect update when logged in as wrong user", %{conn: conn, user: user} do
       path =
         conn
-        |> patch(user_path(conn, :update, user))
+        |> patch(user_path(@endpoint, :update, user))
         |> redirected_to()
 
-      assert path == root_path(conn, :home)
+      assert path == root_path(@endpoint, :home)
     end
 
     test "should redirect destroy when logged in as a non-admin", %{conn: conn, user: user} do
@@ -85,12 +87,12 @@ defmodule SampleAppWeb.UseControllerTest do
 
       path =
         conn
-        |> delete(user_path(conn, :delete, user))
+        |> delete(user_path(@endpoint, :delete, user))
         |> redirected_to()
 
       after_count = Accounts.count_users()
 
-      assert path == root_path(conn, :home)
+      assert path == root_path(@endpoint, :home)
       assert before_count == after_count
     end
   end

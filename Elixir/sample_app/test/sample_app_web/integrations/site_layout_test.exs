@@ -4,8 +4,10 @@ defmodule SampleAppWeb.SiteLayoutTest do
 
   hound_session()
 
-  test "layout links", %{conn: conn} do
-    navigate_to(root_path(conn, :home))
+  test "layout links" do
+    navigate_to(root_path(@endpoint, :home))
+
+    assert current_path() == root_path(@endpoint, :home)
 
     assert page_title() == "Hello SampleApp!"
 

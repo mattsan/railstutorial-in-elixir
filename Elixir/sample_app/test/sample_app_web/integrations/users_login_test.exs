@@ -2,9 +2,7 @@ defmodule SampleAppWeb.UserLoginTest do
   use SampleAppWeb.ConnCase
   use Hound.Helpers
 
-  alias SampleApp.Accounts
-
-  import SampleAppWeb.TestHelper
+  import SampleAppWeb.TestHelper, only: [create_user: 1]
 
   hound_session()
 
@@ -22,11 +20,15 @@ defmodule SampleAppWeb.UserLoginTest do
     find_element(:tag, "button") |> submit_element()
 
     assert current_path() == session_path(@endpoint, :new)
+
+    refute find_element(:class, "alert-danger") |> inner_text() == ""
+
+    navigate_to(root_path(@endpoint, :home))
+
+    assert find_element(:class, "alert-danger") |> inner_text() == ""
   end
 
   test "login with valid information followed by logout", %{user: user} do
-    user = Accounts.get_user_by(email: user.email)
-
     navigate_to(session_path(@endpoint, :new))
 
     assert current_path() == session_path(@endpoint, :new)
@@ -56,25 +58,29 @@ defmodule SampleAppWeb.UserLoginTest do
     refute visible_in_page?(~r/Log out/)
   end
 
-  describe "remembering" do
-    setup %{user: user, remember_me: remember_me} do
-      navigate_to(session_path(@endpoint, :new))
-      fill_field({:id, "session_email"}, user.email)
-      fill_field({:id, "session_password"}, "password")
-      if remember_me do
-        find_element(:id, "session_remember_me") |> click()
-      end
-      find_element(:tag, "button") |> submit_element()
+  def log_in_as(user, remember_me: remember_me) do
+    navigate_to(session_path(@endpoint, :new))
+    fill_field({:id, "session_email"}, user.email)
+    fill_field({:id, "session_password"}, "password")
+    if remember_me do
+      find_element(:id, "session_remember_me") |> click()
     end
 
-    @tag remember_me: false
-    test "login with remembering" do
+    find_element(:tag, "button") |> submit_element()
+  end
+
+  describe "remembering" do
+    test "login with remembering", %{user: user} do
+      log_in_as(user, remember_me: true)
+      assert cookies() |> Enum.find(&(&1["name"] == "remember_token")) |> Map.get("value")
+    end
+
+    test "login without remembering", %{conn: conn, user: user} do
+      log_in_as(user, remember_me: true)
+      delete(conn, session_path(@endpoint, :delete))
+      log_in_as(user, remember_me: false)
       refute cookies() |> Enum.find(&(&1["name"] == "remember_token"))
     end
 
-    @tag remember_me: true
-    test "login without remembering" do
-      assert cookies() |> Enum.find(&(&1["name"] == "remember_token")) |> Map.get("value")
-    end
   end
 end

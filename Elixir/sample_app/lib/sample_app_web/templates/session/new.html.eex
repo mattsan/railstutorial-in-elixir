@@ -26,6 +26,6 @@
         <%= submit("Log in", class: "btn btn-primary form-control") %>
       </div>
     <% end %>
-    <p>New user? <%= link("Sign up now!", to: user_path(@conn, :new)) %></p>
+    <p>New user? <%= link("Sign up now!", to: signup_path(@conn, :new)) %></p>
   </div>
 </div>

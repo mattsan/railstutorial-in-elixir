@@ -1,47 +1,37 @@
 defmodule SampleAppWeb.StaticPageControllerTest do
   use SampleAppWeb.ConnCase
 
-  test "should get root", %{conn: conn} do
-    response =
-      conn
-      |> get(root_path(conn, :home))
-      |> html_response(200)
-    assert response =~ "Sample App"
-    assert response =~ "<title>Hello SampleApp!</title>"
-  end
+  import SampleAppWeb.TestHelper
 
   test "should get home", %{conn: conn} do
     response =
       conn
-      |> get(static_page_path(conn, :home))
+      |> get(static_page_path(@endpoint, :home))
       |> html_response(200)
-    assert response =~ "Sample App"
-    assert response =~ "<title>Hello SampleApp!</title>"
+    assert response =~ content_tag_string(:title, "Hello SampleApp!")
   end
 
   test "should get help", %{conn: conn} do
     response =
       conn
-      |> get(static_page_path(conn, :help))
+      |> get(static_page_path(@endpoint, :help))
       |> html_response(200)
-    assert response =~ "Help"
-    assert response =~ "<title>Hello SampleApp! | Help</title>"
+    assert response =~ content_tag_string(:title, "Hello SampleApp! | Help")
   end
 
   test "should get about", %{conn: conn} do
     response =
       conn
-      |> get(static_page_path(conn, :about))
+      |> get(static_page_path(@endpoint, :about))
       |> html_response(200)
-    assert response =~ "About"
-    assert response =~ "<title>Hello SampleApp! | About</title>"
+    assert response =~ content_tag_string(:title, "Hello SampleApp! | About")
   end
 
   test "should get contact", %{conn: conn} do
     response =
       conn
-      |> get(static_page_path(conn, :contact))
+      |> get(static_page_path(@endpoint, :contact))
       |> html_response(200)
-    assert response =~ "<title>Hello SampleApp! | Contact</title>"
+    assert response =~ content_tag_string(:title, "Hello SampleApp! | Contact")
   end
 end

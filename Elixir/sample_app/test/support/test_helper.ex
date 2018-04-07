@@ -2,6 +2,14 @@ defmodule SampleAppWeb.TestHelper do
   alias SampleApp.{Accounts, Repo}
   alias SampleApp.Accounts.User
 
+  def tag_string(tag, opts \\ []) do
+    Phoenix.HTML.Tag.tag(tag, opts) |> Phoenix.HTML.safe_to_string()
+  end
+
+  def content_tag_string(tag, content, opts \\ []) do
+    Phoenix.HTML.Tag.content_tag(tag, content, opts) |> Phoenix.HTML.safe_to_string()
+  end
+
   def user_params(user_name) do
     %{
       name: "#{user_name}",
@@ -46,6 +54,14 @@ defmodule SampleAppWeb.TestHelper do
       }
 
       post(conn, SampleAppWeb.Router.Helpers.session_path(conn, :create), user_params)
+    end
+  end
+
+  defmacro is_logged_in?(conn) do
+    quote bind_quoted: [conn: conn] do
+      conn
+      |> Plug.Conn.fetch_session()
+      |> Plug.Conn.get_session(:user_id)
     end
   end
 end
