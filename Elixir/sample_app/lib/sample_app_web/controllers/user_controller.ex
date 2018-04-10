@@ -43,7 +43,6 @@ defmodule SampleAppWeb.UserController do
   end
 
   def update(conn, %{"user" => user_params}) do
-    IO.inspect user_params
     user = conn.assigns[:current_user]
 
     case Accounts.update_user(user, user_params) do
@@ -55,6 +54,15 @@ defmodule SampleAppWeb.UserController do
         |> put_flash(:error, error_message(changeset))
         |> render(:edit, user: user, changeset: changeset)
     end
+  end
+
+  def delete(conn, %{"id" => id}) do
+    user = Accounts.get_user!(id)
+    Accounts.delete_user(user)
+
+    conn
+    |> put_flash(:success, "User deleted")
+    |> redirect(to: user_path(conn, :index))
   end
 
   defp error_message(%{errors: errors}) do

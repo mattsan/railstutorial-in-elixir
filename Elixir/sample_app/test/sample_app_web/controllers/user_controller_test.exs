@@ -49,6 +49,24 @@ defmodule SampleAppWeb.UseControllerTest do
       assert path == session_path(@endpoint, :new)
     end
 
+    test "should not allow the admin attribute to be edited via the web",  %{conn: conn, other_user: other_user} do
+      refute other_user.admin
+
+      conn
+      |> log_in_as(other_user)
+      |> patch(user_path(@endpoint, :update, other_user), %{
+          user: %{
+            name: other_user.name,
+            email: other_user.email,
+            password: "password",
+            password_confirmation: "password",
+            admin: true
+          }
+        })
+
+      refute Accounts.get_user!(other_user.id).admin
+    end
+
     test "should redirect destroy when not logged in", %{conn: conn, user: user} do
       path =
         conn
@@ -95,8 +113,5 @@ defmodule SampleAppWeb.UseControllerTest do
       assert path == root_path(@endpoint, :home)
       assert before_count == after_count
     end
-  end
-
-  describe "a non-admin" do
   end
 end

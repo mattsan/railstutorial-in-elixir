@@ -24,6 +24,11 @@ defmodule SampleAppWeb.Router do
     get "/static_pages/help", StaticPageController, :help
     get "/static_pages/about", StaticPageController, :about
     get "/static_pages/contact", StaticPageController, :contact
+  end
+
+  scope "/", SampleAppWeb do
+    pipe_through :browser
+
     get "/signup", UserController, :new, as: :signup
     get "/login", SessionController, :new
     post "/login", SessionController, :create
@@ -44,7 +49,7 @@ defmodule SampleAppWeb.Router do
   end
 
   scope "/", SampleAppWeb do
-    pipe_through [:browser, :permit_logged_in_user, :correct_user, :admin_user]
+    pipe_through [:browser, :permit_logged_in_user, :admin_user]
 
     resources "/users", UserController, only: [:delete]
   end

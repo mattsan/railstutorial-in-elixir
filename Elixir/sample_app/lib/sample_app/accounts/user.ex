@@ -19,10 +19,10 @@ defmodule SampleApp.Accounts.User do
   end
 
   @doc false
-  def changeset(user, attrs) do
+  def changeset(user, attrs, required_fields \\ [:name, :email, :password, :password_confirmation]) do
     user
     |> cast(attrs, [:name, :email, :password, :password_confirmation])
-    |> validate_required([:name, :email, :password, :password_confirmation])
+    |> validate_required(required_fields)
     |> validate_length(:name, max: 50)
     |> validate_length(:email, max: 255)
     |> validate_length(:password, min: 6)
