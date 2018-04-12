@@ -35,7 +35,7 @@ defmodule SampleAppWeb.UserEditTest do
       fill_field({:id, "user_password_confirmation"}, "bar")
       find_element(:tag, "button") |> submit_element()
 
-      assert page_title() == "Hello SampleApp!"
+      assert page_title() == "Ruby on Rails Tutorial Sample App"
       assert find_element(:class, "alert-danger") |> inner_text == "The form contains 4 errors."
     end
 
@@ -53,7 +53,7 @@ defmodule SampleAppWeb.UserEditTest do
       fill_field({:id, "user_password_confirmation"}, "")
       find_element(:tag, "button") |> submit_element()
 
-      assert page_title() == "Hello SampleApp! | Foo Bar"
+      assert page_title() == "Foo Bar | Ruby on Rails Tutorial Sample App"
       assert find_element(:class, "alert-danger") |> inner_text == ""
     end
   end

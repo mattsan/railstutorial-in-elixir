@@ -18,7 +18,7 @@ defmodule SampleAppWeb.UseControllerTest do
       |> get(signup_path(@endpoint, :new))
       |> html_response(200)
 
-    assert response =~ "Hello SampleApp!"
+    assert response =~ "Ruby on Rails Tutorial Sample App"
   end
 
   describe "when not logged in" do
