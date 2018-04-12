@@ -9,7 +9,7 @@ defmodule SampleAppWeb.SiteLayoutTest do
 
     assert current_path() == root_path(@endpoint, :home)
 
-    assert page_title() == "Hello SampleApp!"
+    assert page_title() == "Ruby on Rails Tutorial Sample App"
 
     assert find_element(:link_text, "SAMPLE APP") |> attribute_value("href") == root_url(@endpoint, :home)
     assert find_element(:link_text, "Home") |> attribute_value("href") == root_url(@endpoint, :home)
@@ -19,6 +19,6 @@ defmodule SampleAppWeb.SiteLayoutTest do
 
     find_element(:link_text, "Contact") |> click()
 
-    assert page_title() == "Hello SampleApp! | Contact"
+    assert page_title() == "Contact | Ruby on Rails Tutorial Sample App"
   end
 end
