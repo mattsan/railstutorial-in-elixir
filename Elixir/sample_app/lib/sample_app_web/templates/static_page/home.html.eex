@@ -8,4 +8,4 @@
   <%= link("Sign up now!", to: signup_path(@conn, :new), class: "btn btn-lg btn-primary") %>
 </div>
 
-<%= link(img_tag("https://raw.githubusercontent.com/phoenixframework/phoenix/master/priv/static/phoenix.png", alt: "Phoenix logo"), to: "http://phoenixframework.org") %>
+<%= link(img_tag("images/phoenix.png", alt: "Phoenix logo"), to: "http://phoenixframework.org") %>
