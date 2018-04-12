@@ -3,6 +3,8 @@ defmodule SampleApp.Accounts.User do
   import Ecto.Changeset
   import Bcrypt
 
+  alias SampleApp.Articles.Micropost
+
   @valid_email_regex ~r/\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 
   schema "users" do
@@ -14,6 +16,7 @@ defmodule SampleApp.Accounts.User do
     field :remember_digest, :string
     field :remember_token, :string, virtual: true
     field :admin, :boolean
+    has_many :microposts, Micropost, on_delete: :delete_all
 
     timestamps()
   end

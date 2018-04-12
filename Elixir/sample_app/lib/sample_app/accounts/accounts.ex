@@ -45,6 +45,12 @@ defmodule SampleApp.Accounts do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
+  def get_user_with_microposts!(id) do
+    User
+    |> preload(:microposts)
+    |> Repo.get!(id)
+  end
+
   @doc """
   Creates a user.
 

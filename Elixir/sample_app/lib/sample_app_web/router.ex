@@ -34,6 +34,7 @@ defmodule SampleAppWeb.Router do
     post "/login", SessionController, :create
     delete "/logout", SessionController, :delete
     post "/users", UserController, :create
+    resources "/microposts", MicropostController, only: [:create, :delete]
   end
 
   scope "/", SampleAppWeb do

@@ -7,4 +7,19 @@
       </h1>
     </section>
   </aside>
+  <div class="col-md-8">
+    <h3>Microposts(<%= Enum.count(@user.microposts) %>)</h3>
+    <ol class="microposts">
+      <%= @user.microposts |> Enum.map fn micropost -> %>
+        <li id="micropost-<%= micropost.id %>">
+          <%= img_tag(gravatar_for(@user, size: 50), class: "gravatar") %>
+          <span class="user"><%= link(@user.name, to: user_path(@conn, :show, @user)) %></span>
+          <span class="content"><%= micropost.content %></span>
+          <span class="timestamp">
+            Posted <%= micropost.inserted_at %>
+          </span>
+        </li>
+      <% end %>
+    </ol>
+  </div>
 </div>
