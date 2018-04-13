@@ -34,13 +34,13 @@ defmodule SampleAppWeb.Router do
     post "/login", SessionController, :create
     delete "/logout", SessionController, :delete
     post "/users", UserController, :create
-    resources "/microposts", MicropostController, only: [:create, :delete]
   end
 
   scope "/", SampleAppWeb do
     pipe_through [:browser, :permit_logged_in_user]
 
     resources "/users", UserController, only: [:index, :show]
+    resources "/microposts", MicropostController, only: [:create, :delete]
   end
 
   scope "/", SampleAppWeb do

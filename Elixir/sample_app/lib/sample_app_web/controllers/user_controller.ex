@@ -3,6 +3,7 @@ defmodule SampleAppWeb.UserController do
 
   alias SampleApp.Accounts
   alias SampleApp.Accounts.User
+  alias SampleApp.Articles
   alias SampleAppWeb.Auth
 
   def new(conn, _) do
@@ -10,10 +11,11 @@ defmodule SampleAppWeb.UserController do
     render(conn, :new, changeset: changeset)
   end
 
-  def show(conn, %{"id" => id}) do
-    user = Accounts.get_user_with_microposts!(id)
+  def show(conn, %{"id" => id} = params) do
+    user = Accounts.get_user!(id)
+    microposts = Articles.list_microposts_paginated(params, user)
     conn
-    |> render(:show, user: user)
+    |> render(:show, user: user, microposts: microposts)
   end
 
   def index(conn, params) do

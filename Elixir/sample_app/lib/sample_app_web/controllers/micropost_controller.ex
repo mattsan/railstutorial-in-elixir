@@ -2,7 +2,6 @@ defmodule SampleAppWeb.MicropostController do
   use SampleAppWeb, :controller
 
   alias SampleApp.Articles
-  alias SampleApp.Articles.Micropost
 
   def create(conn, %{"micropost" => micropost_params}) do
     case Articles.create_micropost(micropost_params) do
