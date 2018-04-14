@@ -1,11 +1,28 @@
-<div class="center jumbotron">
-  <h1>Welcome to the Sample App</h1>
+<%= if logged_in?(@conn) do %>
+  <div class="row">
+    <aside class="col-md-4">
+      <session class="user_info">
+        <%= render SampleAppWeb.UserView, "user_info.html", conn: @conn %>
+      </session>
+      <session class="micropost_form">
+        <%= render SampleAppWeb.MicropostView, "micropost_info.html", conn: @conn, changeset: @changeset %>
+      </session>
+    </aside>
+    <div class="col-md-8">
+      <h3>Micropost Feed</h3>
+      <%= render SampleAppWeb.MicropostView, "feed.html", conn: @conn, user: current_user(@conn), feed_items: @feed_items %>
+    </div>
+  </div>
+<% else %>
+  <div class="center jumbotron">
+    <h1>Welcome to the Sample App</h1>
 
-  <h2>
-    This is the home page for the Ruby on Rails Tutorial sample application.
-  </h2>
+    <h2>
+      This is the home page for the Ruby on Rails Tutorial sample application.
+    </h2>
 
-  <%= link("Sign up now!", to: signup_path(@conn, :new), class: "btn btn-lg btn-primary") %>
-</div>
+    <%= link("Sign up now!", to: signup_path(@conn, :new), class: "btn btn-lg btn-primary") %>
+  </div>
 
-<%= link(img_tag("images/phoenix.png", alt: "Phoenix logo"), to: "http://phoenixframework.org") %>
+  <%= link(img_tag("images/phoenix.png", alt: "Phoenix logo"), to: "http://phoenixframework.org") %>
+<% end %>

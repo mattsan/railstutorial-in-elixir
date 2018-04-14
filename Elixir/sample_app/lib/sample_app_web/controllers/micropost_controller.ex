@@ -2,15 +2,20 @@ defmodule SampleAppWeb.MicropostController do
   use SampleAppWeb, :controller
 
   alias SampleApp.Articles
+  alias SampleApp.Articles.Micropost
+
+  alias SampleApp.Articles
 
   def create(conn, %{"micropost" => micropost_params}) do
-    case Articles.create_micropost(micropost_params) do
-      {:ok, micropost} ->
+    case Articles.create_micropost(micropost_params, current_user(conn)) do
+      {:ok, %Micropost{}} ->
         conn
         |> put_flash(:info, "Micropost created successfully.")
-        |> redirect(to: micropost_path(conn, :show, micropost))
+        |> redirect(to: root_path(conn, :home))
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
+        IO.inspect SampleAppWeb.ErrorHelpers.error_tag(changeset, :content)
+        conn
+        |> render(SampleAppWeb.StaticPageView, "home.html", changeset: changeset)
     end
   end
 
@@ -21,5 +26,9 @@ defmodule SampleAppWeb.MicropostController do
     conn
     |> put_flash(:info, "Micropost deleted successfully.")
     |> redirect(to: micropost_path(conn, :index))
+  end
+
+  def current_user(conn) do
+    conn.assigns[:current_user]
   end
 end

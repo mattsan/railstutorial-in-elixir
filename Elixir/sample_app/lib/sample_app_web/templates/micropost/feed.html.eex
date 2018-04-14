@@ -1,0 +1,5 @@
+<%= pagination_links @feed_items %>
+<ol class="microposts">
+  <%= render_many(@feed_items, SampleAppWeb.MicropostView, "micropost.html", conn: @conn, user: @user) %>
+</ol>
+<%= pagination_links @feed_items %>

@@ -1,0 +1,4 @@
+<%= link(img_tag(gravatar_for(current_user(@conn))), to: user_path(@conn, :show, current_user(@conn))) %>
+<h1><%= current_user(@conn).name %></h1>
+<span><%= link("view my profile", to: user_path(@conn, :show, current_user(@conn))) %></span>
+<span> micropost(s)</span>

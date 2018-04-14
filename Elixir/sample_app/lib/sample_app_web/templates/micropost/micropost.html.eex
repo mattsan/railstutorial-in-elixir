@@ -1,0 +1,8 @@
+<li id="micropost-<%= @micropost.id %>">
+  <%= img_tag(gravatar_for(@user, size: 50), class: "gravatar") %>
+  <span class="user"><%= link(@user.name, to: user_path(@conn, :show, @user)) %></span>
+  <span class="content"><%= @micropost.content %></span>
+  <span class="timestamp">
+    Posted <%= @micropost.inserted_at %>
+  </span>
+</li>

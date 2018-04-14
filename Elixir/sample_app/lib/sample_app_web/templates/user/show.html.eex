@@ -12,16 +12,7 @@
       <h3>Microposts(<%= @microposts.total_entries %>)</h3>
       <%= pagination_links @microposts %>
       <ol class="microposts">
-        <%= Enum.map @microposts, fn micropost -> %>
-          <li id="micropost-<%= micropost.id %>">
-            <%= img_tag(gravatar_for(@user, size: 50), class: "gravatar") %>
-            <span class="user"><%= link(@user.name, to: user_path(@conn, :show, @user)) %></span>
-            <span class="content"><%= micropost.content %></span>
-            <span class="timestamp">
-              Posted <%= micropost.inserted_at %>
-            </span>
-          </li>
-        <% end %>
+        <%= render_many(@microposts, SampleAppWeb.MicropostView, "micropost.html", conn: @conn, user: @user) %>
       </ol>
       <%= pagination_links @microposts %>
     <% end %>

@@ -1,0 +1,9 @@
+<%= form_for @changeset, micropost_path(@conn, :create), [as: :micropost], fn f -> %>
+  <div class="field">
+    <%= textarea(f, :content, class: "form-control", placeholder: "Compose new micropost...") %>
+    <%= error_tag(f, :content) %>
+  </div>
+  <div class="form-group">
+    <%= submit("Post", class: "btn btn-primary form-control") %>
+  </div>
+<% end %>
