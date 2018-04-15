@@ -119,6 +119,19 @@ defmodule SampleAppWeb.Auth do
     end
   end
 
+  def correct_user_micropost_deletion(conn, _) do
+    micropost = SampleApp.Articles.get_micropost!(conn.params["id"])
+
+    if micropost.user_id == current_user(conn).id do
+      conn
+      |> assign(:micropost, micropost)
+    else
+      conn
+      |> redirect(to: SampleAppWeb.Router.Helpers.root_path(conn, :home))
+      |> halt()
+    end
+  end
+
   def admin_user(conn, _) do
     if current_user(conn).admin do
       conn

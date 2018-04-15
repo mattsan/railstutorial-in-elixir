@@ -40,13 +40,19 @@ defmodule SampleAppWeb.Router do
     pipe_through [:browser, :permit_logged_in_user]
 
     resources "/users", UserController, only: [:index, :show]
-    resources "/microposts", MicropostController, only: [:create, :delete]
+    resources "/microposts", MicropostController, only: [:create]
   end
 
   scope "/", SampleAppWeb do
     pipe_through [:browser, :permit_logged_in_user, :correct_user]
 
     resources "/users", UserController, only: [:edit, :update]
+  end
+
+  scope "/", SampleAppWeb do
+    pipe_through [:browser, :permit_logged_in_user, :correct_user_micropost_deletion]
+
+    resources "/microposts", MicropostController, only: [:delete]
   end
 
   scope "/", SampleAppWeb do

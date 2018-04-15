@@ -1,21 +1,14 @@
 defmodule SampleAppWeb.StaticPageController do
   use SampleAppWeb, :controller
 
-  alias SampleApp.Repo
+  alias SampleApp.Articles
   alias SampleApp.Articles.Micropost
   alias SampleAppWeb.Auth
-
-  import Ecto.Query
 
   def home(conn, params) do
     assigns =
       if Auth.logged_in?(conn) do
-        feed_items =
-          conn
-          |> current_uer()
-          |> Ecto.assoc(:microposts)
-          |> order_by(desc: :inserted_at)
-          |> Repo.paginate(params)
+        feed_items = Articles.list_microposts_paginated(params, current_user(conn))
 
         [
           changeset: Micropost.changeset(%Micropost{}, %{}),
@@ -44,7 +37,7 @@ defmodule SampleAppWeb.StaticPageController do
     |> render(:contact)
   end
 
-  defp current_uer(conn) do
+  defp current_user(conn) do
     conn.assigns[:current_user]
   end
 end

@@ -64,4 +64,13 @@ defmodule SampleAppWeb.TestHelper do
       |> Plug.Conn.get_session(:user_id)
     end
   end
+
+  defmacro assert_diff(exp, diff, do: clause) do
+    quote do
+      before_condition = unquote(exp)
+      unquote(clause)
+      after_condition = unquote(exp)
+      assert before_condition + unquote(diff) == after_condition
+    end
+  end
 end

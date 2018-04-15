@@ -4,5 +4,16 @@
   <span class="content"><%= @micropost.content %></span>
   <span class="timestamp">
     Posted <%= @micropost.inserted_at %>
+    <%= if @micropost.user_id == current_user(@conn).id do %>
+      <%= link("delete", to: micropost_path(@conn, :delete, @micropost), method: :delete, data: [confirm: "You sure?"]) %>
+    <% end %>
   </span>
 </li>
+
+<%= if Mix.env == :test do %>
+  <script>
+  (function() {
+    window.confirm = function() { return true; }
+  })()
+  </script>
+<% end %>

@@ -23,7 +23,7 @@ defmodule SampleApp.Articles do
     |> Repo.all()
   end
 
-  def list_microposts_paginated(params, user) do
+  def list_microposts_paginated(params \\ %{}, user) do
     user
     |> Ecto.assoc(:microposts)
     |> order_by(desc: :inserted_at)
