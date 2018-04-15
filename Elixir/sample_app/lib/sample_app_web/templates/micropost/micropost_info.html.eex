@@ -1,4 +1,4 @@
-<%= form_for @changeset, micropost_path(@conn, :create), [as: :micropost], fn f -> %>
+<%= form_for @changeset, micropost_path(@conn, :create), [multipart: true], fn f -> %>
   <div class="field">
     <%= textarea(f, :content, class: "form-control", placeholder: "Compose new micropost...") %>
     <%= error_tag(f, :content) %>
@@ -6,4 +6,16 @@
   <div class="form-group">
     <%= submit("Post", class: "btn btn-primary form-control") %>
   </div>
+  <div class="form-group">
+    <%= file_input(f, :picture, accept: "image/jpeg,image/gif,image/png,image/svg+xml") %>
+  </div>
 <% end %>
+
+<script type="text/javascript">
+document.querySelector('#micropost_picture').addEventListener('change', function() {
+  var size_in_megabytes = this.files[0].size / 1024 / 1024;
+  if (size_in_megabytes > 5) {
+    alert('Maximum file size is 5MB. Please choose a smaller file.');
+  }
+});
+</script>
