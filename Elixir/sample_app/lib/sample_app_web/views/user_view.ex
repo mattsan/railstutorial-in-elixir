@@ -1,6 +1,9 @@
 defmodule SampleAppWeb.UserView do
   use SampleAppWeb, :view
   import Scrivener.HTML
+  import Ecto.Query
+
+  alias SampleApp.Repo
 
   @gravatar_uri %URI{scheme: "https", host: "secure.gravatar.com/avatar/"}
 
@@ -16,4 +19,11 @@ defmodule SampleAppWeb.UserView do
   def page_title(_, :index), do: "All users"
   def page_title(conn, :show), do: conn.assigns[:user].name
   def page_title(_, _), do: nil
+
+  def count_microposts(user) do
+    user
+    |> Ecto.assoc(:microposts)
+    |> distinct(true)
+    |> Repo.aggregate(:count, :id)
+  end
 end
