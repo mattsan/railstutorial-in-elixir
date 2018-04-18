@@ -1,0 +1,4 @@
+<%= form_for Ecto.Changeset.change(%SampleApp.Accounts.Relationship{}, %{followed_id: @user.id}), relationship_path(@conn, :create), fn f -> %>
+  <%= hidden_input(f, :followed_id) %>
+  <%= submit "Follow", class: "btn btn-primary" %>
+<% end %>

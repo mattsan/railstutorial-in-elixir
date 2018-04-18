@@ -4,9 +4,10 @@ defmodule SampleApp.Accounts do
   """
 
   import Ecto.Query, warn: false
-  alias SampleApp.Repo
 
+  alias SampleApp.Repo
   alias SampleApp.Accounts.User
+  alias SampleApp.Accounts.Relationship
 
   @doc """
   Returns the list of users.
@@ -124,6 +125,40 @@ defmodule SampleApp.Accounts do
     User
     |> select([u], count(u.id))
     |> Repo.one()
+  end
+
+  def follow(%User{} = follower, %User{} = followed) do
+    %Relationship{}
+    |> Relationship.changeset(%{follower: follower, followed: followed})
+    |> Repo.insert()
+  end
+
+  def unfollow(%User{} = follower, %User{} = followed) do
+    Relationship
+    |> where(follower_id: ^follower.id, followed_id: ^followed.id)
+    |> Repo.one
+    |> Repo.delete()
+  end
+
+  def following?(%User{} = follower, %User{} = followed) do
+    following_count =
+      Relationship
+      |> where(follower_id: ^follower.id, followed_id: ^followed.id)
+      |> Repo.aggregate(:count, :id)
+
+    following_count > 0
+  end
+
+  def get_followers(%User{} = user) do
+    user
+    |> Ecto.assoc(:followers)
+    |> Repo.all()
+  end
+
+  def get_following(%User{} = user) do
+    user
+    |> Ecto.assoc(:following)
+    |> Repo.all()
   end
 
   defp new_token do

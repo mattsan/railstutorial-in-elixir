@@ -37,18 +37,28 @@ user
 
 create_microposts.(50, user)
 
-1..99 |> Enum.each(fn n ->
-  name = Faker.Name.name()
-  email = "example-#{n}@railstutorial.org"
-  password = "password"
+users =
+  1..99
+  |> Enum.map(fn n ->
+      name = Faker.Name.name()
+      email = "example-#{n}@railstutorial.org"
+      password = "password"
 
-  {:ok, %User{} = user} =
-    Accounts.create_user(%{
-      name: name,
-      email: email,
-      password: password,
-      password_confirmation: password
-    })
+      {:ok, %User{} = user} =
+        Accounts.create_user(%{
+          name: name,
+          email: email,
+          password: password,
+          password_confirmation: password
+        })
 
-  create_microposts.(50, user)
-end)
+      create_microposts.(50, user)
+
+      user
+    end)
+
+following = users |> Enum.slice(1..50)
+followers = users |> Enum.slice(2..40)
+
+following |> Enum.each(fn followed -> Accounts.follow(user, followed) end)
+followers |> Enum.each(fn follower -> Accounts.follow(follower, user) end)

@@ -39,8 +39,12 @@ defmodule SampleAppWeb.Router do
   scope "/", SampleAppWeb do
     pipe_through [:browser, :permit_logged_in_user]
 
-    resources "/users", UserController, only: [:index, :show]
+    resources "/users", UserController, only: [:index, :show] do
+      get "/following", UserController, :following, as: :relationship
+      get "/followers", UserController, :followers, as: :relationship
+    end
     resources "/microposts", MicropostController, only: [:create]
+    resources "/relationships", RelationshipController, only: [:create, :delete]
   end
 
   scope "/", SampleAppWeb do

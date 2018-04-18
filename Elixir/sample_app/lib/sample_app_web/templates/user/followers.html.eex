@@ -11,14 +11,11 @@
     </session>
   </aside>
   <div class="col-md-8">
-    <%= render("follow_form.html", conn: @conn, user: @user) %>
-    <%= if @microposts.total_entries > 0 do %>
-      <h3>Microposts(<%= @microposts.total_entries %>)</h3>
-      <%= pagination_links @microposts %>
+    <h2>Followers</h2>
+    <%= if Enum.count(@followers) > 0 do %>
       <ol class="microposts">
-        <%= render_many(@microposts, SampleAppWeb.MicropostView, "micropost.html", conn: @conn, user: @user) %>
+        <%= render_many(@followers, SampleAppWeb.UserView, "user.html", conn: @conn) %>
       </ol>
-      <%= pagination_links @microposts %>
     <% end %>
   </div>
 </div>

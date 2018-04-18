@@ -1,0 +1,14 @@
+<div class="stats">
+  <%= link(to: user_relationship_path(@conn, :following, @user)) do %>
+    <strong id="following" class="stat">
+      <%= @user |> Ecto.assoc(:following) |> Repo.aggregate(:count, :id) %>
+    </strong>
+    following
+  <% end %>
+  <%= link(to: user_relationship_path(@conn, :followers, @user)) do %>
+    <strong id="followers" class="stat">
+      <%= @user |> Ecto.assoc(:followers) |> Repo.aggregate(:count, :id) %>
+    </strong>
+    followers
+  <% end %>
+</div>

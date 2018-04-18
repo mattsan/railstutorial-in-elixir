@@ -4,6 +4,9 @@
       <session class="user_info">
         <%= render SampleAppWeb.UserView, "user_info.html", conn: @conn %>
       </session>
+      <session class="stats">
+        <%= render SampleAppWeb.UserView, "stats.html", conn: @conn, user: current_user(@conn) %>
+      </session>
       <session class="micropost_form">
         <%= render SampleAppWeb.MicropostView, "micropost_info.html", conn: @conn, changeset: @changeset %>
       </session>

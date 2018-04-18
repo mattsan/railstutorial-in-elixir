@@ -4,6 +4,7 @@ defmodule SampleApp.Accounts.User do
   import Bcrypt
 
   alias SampleApp.Articles.Micropost
+  alias SampleApp.Accounts.User
 
   @valid_email_regex ~r/\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 
@@ -17,6 +18,8 @@ defmodule SampleApp.Accounts.User do
     field :remember_token, :string, virtual: true
     field :admin, :boolean
     has_many :microposts, Micropost, on_delete: :delete_all
+    many_to_many :followers, User, join_through: "relationships", join_keys: [followed_id: :id, follower_id: :id], on_delete: :delete_all, on_replace: :delete
+    many_to_many :following, User, join_through: "relationships", join_keys: [follower_id: :id, followed_id: :id], on_delete: :delete_all, on_replace: :delete
 
     timestamps()
   end

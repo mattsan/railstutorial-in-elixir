@@ -67,6 +67,22 @@ defmodule SampleAppWeb.UserController do
     |> redirect(to: user_path(conn, :index))
   end
 
+  def following(conn, %{"user_id" => id}) do
+    user = Accounts.get_user!(id)
+    following = Accounts.get_following(user)
+
+    conn
+    |> render(:following, user: user, following: following)
+  end
+
+  def followers(conn, %{"user_id" => id}) do
+    user = Accounts.get_user!(id)
+    followers = Accounts.get_followers(user)
+
+    conn
+    |> render(:followers, user: user, followers: followers)
+  end
+
   defp error_message(%{errors: errors}) do
     case Enum.count(errors) do
       0 -> ""
